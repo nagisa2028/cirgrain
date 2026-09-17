@@ -1,0 +1,79 @@
+name: maintainer-approval
+
+# A pull request that changes a gated path (the design and the repository's own
+# rules, see CONTRIBUTING.md) fails this check until the maintainer adds the
+# maintainer-approved label. A later push that changes a gated path again removes it.
+#
+# pull_request_target, not pull_request: the workflow must come from main, or a pull
+# request could edit this file and approve itself. That is safe only because nothing
+# here checks out or runs the pull request's code; it reads the pull request through
+# the API alone. Keep it that way.
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, ready_for_review, labeled, unlabeled]
+
+permissions: {}
+
+concurrency:
+  group: maintainer-approval-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  maintainer-approval:
+    name: maintainer-approval
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read # compare the pushed commits
+      pull-requests: read # list the changed files
+      issues: write # remove the label: pull request labels are issue labels
+    steps:
+      - name: Require approval for gated paths
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          ACTION: ${{ github.event.action }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.event.after }}
+          LABEL: maintainer-approved
+          # Keep in sync with "Changes to gated paths" in CONTRIBUTING.md.
+          GATED: '^(docs/|\.github/|CONTRIBUTING\.md$|CLAUDE\.md$|AGENTS\.md$)'
+        run: |
+          set -euo pipefail
+
+          # A rename counts under both its old and its new path.
+          gated="$(gh api --paginate "repos/$REPO/pulls/$PR/files" \
+            --jq '.[] | .filename, (.previous_filename // empty)' | grep -E "$GATED" || true)"
+          if [[ -z "$gated" ]]; then
+            echo "No gated path changed."
+            exit 0
+          fi
+          echo "Gated paths changed:"
+          echo "$gated"
+
+          approved="$(gh api "repos/$REPO/issues/$PR/labels" \
+            --jq "any(.[]; .name == \"$LABEL\")")"
+
+          # An approval covers what was reviewed. If this push changed a gated path,
+          # or what it changed cannot be determined, the approval is withdrawn.
+          if [[ "$ACTION" == "synchronize" && "$approved" == "true" ]]; then
+            if pushed="$(gh api "repos/$REPO/compare/$BEFORE...$AFTER" \
+                 --jq '.files[] | .filename, (.previous_filename // empty)')"; then
+              pushed_gated="$(grep -E "$GATED" <<<"$pushed" || true)"
+            else
+              pushed_gated="(could not compare $BEFORE...$AFTER)"
+            fi
+            if [[ -n "$pushed_gated" ]]; then
+              gh api -X DELETE "repos/$REPO/issues/$PR/labels/$LABEL" >/dev/null
+              approved=false
+              echo "::warning::Gated paths changed after approval; $LABEL was removed."
+            fi
+          fi
+
+          if [[ "$approved" != "true" ]]; then
+            echo "::error::This pull request changes gated paths. The maintainer must add the $LABEL label."
+            exit 1
+          fi
+          echo "Approved by the maintainer."

@@ -1,0 +1,11 @@
+# Normalize line endings in the repository; check out LF everywhere.
+* text=auto eol=lf
+
+# Scripts must stay LF or they break on execution.
+*.sh text eol=lf
+
+# Binary files are never diffed or normalized.
+*.png binary
+*.jpg binary
+*.iso binary
+*.qcow2 binary

@@ -1,0 +1,40 @@
+# --- Build output ---
+/bin/
+/dist/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# --- Go test / profiling artifacts ---
+*.test
+*.out
+coverage.*
+*.coverprofile
+*.prof
+
+# --- Local environment and secrets (commit an *.example instead) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+!**/testdata/**
+
+# --- Local runtime data ---
+/tmp/
+*.log
+
+# --- Editors / OS ---
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# --- Claude Code: personal settings stay local; shared .claude/ config is committed ---
+.claude/settings.local.json

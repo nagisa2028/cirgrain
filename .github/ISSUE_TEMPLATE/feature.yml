@@ -1,0 +1,45 @@
+name: Feature
+description: A parent issue for work that needs several tasks. It has no pull request of its own.
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What works once every task is done, and why it is needed.
+    validations:
+      required: true
+  - type: textarea
+    id: design
+    attributes:
+      label: Design
+      description: >-
+        Links to the documents in this repository this feature follows. If no design
+        document applies, write "None: <reason>".
+      placeholder: docs/…
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: >-
+        Checks on the feature as a whole, beyond each task's own. Checked when every
+        sub-issue is closed, before this issue is closed.
+      value: |
+        - [ ]
+    validations:
+      required: true
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+      description: Related work this feature deliberately does not include.
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: >-
+        After creating: add one `area/*` label unless this is a repository-wide change;
+        set the milestone, which a repository-wide change gets only if a milestone
+        depends on it; then create the tasks with the Task template and attach them as
+        sub-issues.
