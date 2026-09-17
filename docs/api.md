@@ -1,5 +1,7 @@
 # API
 
-担当範囲: 利用者に公開する表現: resource、非同期操作、status、error、ID、wire format、versioning
+概要: 利用者とシステムの接点
+
+担当範囲: 未定
 
 状態: 未着手

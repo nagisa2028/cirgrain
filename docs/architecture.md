@@ -1,5 +1,7 @@
 # Architecture
 
-担当範囲: module の構成と依存方向、process ごとの module 選択、module 境界と serialization、controller と worker の通信
+概要: システムを構成する要素と、そのつながり
+
+担当範囲: 未定
 
 状態: 未着手
