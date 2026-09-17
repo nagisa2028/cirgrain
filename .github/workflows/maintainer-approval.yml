@@ -26,8 +26,9 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: read # compare the pushed commits
-      pull-requests: read # list the changed files
-      issues: write # remove the label: pull request labels are issue labels
+      # list the changed files, and remove the label: removing a label from a pull
+      # request needs pull-requests write; issues write alone is refused (403)
+      pull-requests: write
     steps:
       - name: Require approval for gated paths
         env:
