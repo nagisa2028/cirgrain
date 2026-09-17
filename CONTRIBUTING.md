@@ -31,11 +31,22 @@ milestone (see [Documents](#documents)).
 
 ## Documents
 
+Design documents live in `docs/`; [docs/README.md](docs/README.md) is the index and
+says which document covers what.
+
 - **Decisions live in the repository**, not in issue or pull request text. An issue
   states the goal and acceptance criteria and links the documents it relies on.
-- **Documents are organized by subject and rewritten to stay current.** A change of
-  decision edits the document in place; no section is appended to record what
-  changed or when. The history of a decision is its pull requests.
+- **Subject documents say what holds now.** They are organized by subject and
+  rewritten to stay current: a change of decision edits the document in place, and
+  no section is appended to record what changed or when.
+- **Decision records say why.** A decision that chooses between alternatives, or
+  changes an earlier decision, gets a record in `docs/decisions/`: the context, the
+  options considered, the choice and its reasons, and the documents and issues it
+  affects. A record is never edited after it merges, except to mark it superseded by
+  a later one. Subject documents link the records behind what they state.
+- **A design change is made whole in one pull request**: the decision record, and
+  every document it lists as affected. Implementation it affects is tracked as issues
+  linked from the record.
 - A document that describes something not built yet says so.
 
 ## Language
@@ -101,8 +112,9 @@ that a document cannot be followed:
 2. Add the `needs-decision` label to the issue or pull request, and put the question at
    the top of its own comment, in English, with the options and a recommendation.
    The agent working with the maintainer relays it to them in Japanese.
-3. Resume when the answer is merged into the design document, not when it is given
-   in the thread. Then remove the label.
+3. Resume when the answer is merged into the design documents (a decision record and
+   the documents it affects), not when it is given in the thread. Then remove the
+   label.
 
 ## Areas
 
