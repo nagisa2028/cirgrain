@@ -1,0 +1,54 @@
+name: Task
+description: A unit of work that one pull request completes.
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What is true once this is done, and why it is needed.
+    validations:
+      required: true
+  - type: textarea
+    id: design
+    attributes:
+      label: Design
+      description: >-
+        Links to the documents in this repository this work follows. Decisions go in
+        those documents, not here. If no design document applies, write
+        "None: <reason>"; if this work creates the design document, say so.
+      placeholder: docs/…
+    validations:
+      required: true
+  - type: textarea
+    id: blocked-by
+    attributes:
+      label: Blocked by
+      description: >-
+        Issues whose work this task needs, one "#N" per line, or "None". Work starts
+        only when each is satisfied (CONTRIBUTING.md).
+      value: None
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Checks that decide whether the pull request completes this issue.
+      value: |
+        - [ ]
+    validations:
+      required: true
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+      description: Related work this issue deliberately does not include.
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: >-
+        After creating: add one `area/*` label unless this is a repository-wide change;
+        set the milestone, which a repository-wide change gets only if a milestone
+        depends on it; attach this issue to its parent if it is part of a feature; add
+        `needs-decision` if the maintainer must decide something before work starts.
